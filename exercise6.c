@@ -89,12 +89,11 @@ PROCESS_THREAD(test_runicast_process, ev, data)
 
   	    rimeaddr_t addr;
 
-  		if(node_id % 2 == 0) {
-  			addr.u8[0] = node_id + 1;
+  		if(node_id == 70) {
+  			addr.u8[0] = 80;
   		}
-  		/* In case I am node 51, choose 50, etc */
   		else {
-  		    addr.u8[0] = node_id - 1;
+  		    addr.u8[0] = 70;
   		}
   	    addr.u8[1] = 0;
   	    /* when calling runicast_send, we have to specify the address as the second argument (a pointer to the defined rimeaddr_t struct)
