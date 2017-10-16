@@ -146,4 +146,7 @@ PROCESS_THREAD(test_runicast_process, ev, data)
  * Paste your code to the ILIAS page and make sure it's running (I will test it).
  *
  * b) compare the latency with that from the exercise 4 solved the week before. Explain the differences.
+ *
+ * RTT is a little longer. This is because the second node does send an okay before proceeding with
+ * the received message. 
  */
