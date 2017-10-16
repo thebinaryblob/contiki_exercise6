@@ -54,6 +54,23 @@ static void recv_runicast(struct runicast_conn *c, rimeaddr_t *from, uint8_t seq
   printf("originator = %d\n", tmReceived.originator);
   leds_on(LEDS_BLUE);
   ctimer_set(&ledTimer, CLOCK_SECOND / 8, timerCallback_turnOffLeds, NULL);
+
+	if(tmReceived.time != tmSent.time)
+	{
+		packetbuf_copyfrom(&tmReceived, sizeof(tmReceived));
+		rimeaddr_t addr;
+		addr.u8[0] = (int) tmReceived.originator;
+		addr.u8[1] = 0;
+		runicast_send(&runicast, &addr, MAX_RETRANSMISSIONS);
+	}
+	else
+	{
+        rtt =  clock_time() - tmReceived.time;
+        printf("#################################\n");
+        printf("Round trip time = %d secs ", (uint16_t)rtt / CLOCK_SECOND);
+        printf("%d millis\n", (1000L * ((uint16_t)rtt  % CLOCK_SECOND)) / CLOCK_SECOND);
+        printf("#################################\n");
+	}
 }
 
 static void sent_runicast(struct runicast_conn *c, rimeaddr_t *to, uint8_t retransmissions)
@@ -70,6 +87,7 @@ PROCESS_THREAD(test_runicast_process, ev, data)
   PROCESS_EXITHANDLER(runicast_close(&runicast);)
 
   PROCESS_BEGIN();
+  tmSent.time = 0;
 
   runicast_open(&runicast, RUNICAST_CHANNEL, &runicast_callbacks);
 
